@@ -7,10 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.todoapp.ui.components.TodoFAB
+import com.example.todoapp.ui.components.TodoTopAppBar
 import com.example.todoapp.ui.theme.TodoAppTheme
 import com.example.todoapp.ui.todo.TodoScreen
 
@@ -20,7 +19,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TodoAppTheme {
-                Scaffold { innerPadding ->
+                Scaffold(
+                    topBar = { TodoTopAppBar() },
+                    floatingActionButton = { TodoFAB(onClick = {}) }
+                ) { innerPadding ->
                     TodoScreen(
                         modifier = Modifier
                             .fillMaxSize()
