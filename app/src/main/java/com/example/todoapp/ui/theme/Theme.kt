@@ -20,7 +20,8 @@ private val DarkColorScheme = darkColorScheme(
     onBackground = White,
     onSurface = White,
     error = ErrorRed,
-    onError = Black
+    onError = Black,
+    onSurfaceVariant = LightGray,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -33,7 +34,8 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Black,
     onSurface = Black,
     error = ErrorRed,
-    onError = White
+    onError = White,
+    onSurfaceVariant = DarkGray,
 )
 
 @Composable

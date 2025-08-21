@@ -15,6 +15,6 @@ val LightGray = Color(0xFFBDBDBD)
 val DarkGray = Color(0xFF616161)
 
 val PurpleDark = Color(0xFF5E35B1)
-var PurpleDarkContainer = Color(0xFF311B92)
+var PurpleDarkContainer = Color(0xFF23232F)
 val BackgroundDark = Color(0xFF121212)
 
