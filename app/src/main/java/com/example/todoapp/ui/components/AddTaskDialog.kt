@@ -24,14 +24,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 @Composable
 fun AddTaskDialog(
     showDialog: Boolean,
-    onDismissDialog: () -> Unit
+    onDismissDialog: () -> Unit,
+    onAddTask: (String, String) -> Unit
 ) {
     if (showDialog) {
 
@@ -95,7 +95,10 @@ fun AddTaskDialog(
                         horizontalArrangement = Arrangement.End
                     ) {
                         TextButton(
-                            onClick = { onDismissDialog() }
+                            onClick = {
+                                title = ""
+                                description = ""
+                                onDismissDialog() }
                         ) {
                             Text("Cancel")
                         }
@@ -103,7 +106,12 @@ fun AddTaskDialog(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Button(
-                            onClick = { onDismissDialog() },
+                            onClick = {
+                                onAddTask(title, description)
+                                title = ""
+                                description = ""
+                                onDismissDialog()
+                            },
                             enabled = title.isNotBlank()
                         ) {
                             Text("Add Task")
@@ -113,13 +121,4 @@ fun AddTaskDialog(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AddTaskDialogPreview() {
-    AddTaskDialog(
-        showDialog = true,
-        onDismissDialog = {}
-    )
 }
