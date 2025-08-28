@@ -1,22 +1,27 @@
 package com.example.todoapp.ui.todo
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 import com.example.todoapp.domain.model.TodoItem
 import com.example.todoapp.ui.components.AddTaskDialog
 import com.example.todoapp.ui.components.TodoFAB
@@ -56,6 +61,21 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                     )
                 }
             } else {
+                val hasCompleted = todos.any { it.isComplete }
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(end = 16.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = { viewModel.clearAllTodos() }) {
+                        Text("Clear all")
+                    }
+                    if (hasCompleted) {
+                        TextButton(onClick = { viewModel.clearCompletedTodos() }) {
+                            Text("Clear completed")
+                        }
+                    }
+                }
+
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(todos) { todo ->
                         TodoCard(
