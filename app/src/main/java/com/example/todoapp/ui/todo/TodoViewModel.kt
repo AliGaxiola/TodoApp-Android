@@ -28,5 +28,36 @@ class TodoViewModel : ViewModel() {
         }
     }
 
+    // Toggle completion status
+    fun toggleComplete(id: Int) {
+        viewModelScope.launch {
+            _todos.value = _todos.value.map { todo ->
+                if (todo.id == id) {
+                    todo.copy(isComplete = !todo.isComplete)
+                } else {
+                    todo
+                }
+            }
+        }
+    }
 
+    // Remove todo
+    fun removeTodo(id: Int) {
+        viewModelScope.launch {
+            _todos.value = _todos.value.filter { it.id != id }
+        }
+    }
+
+    // Edit todo
+    fun editTodo(id: Int, newTitle: String, newDescription: String) {
+        viewModelScope.launch {
+            _todos.value = _todos.value.map { todo ->
+                if (todo.id == id) {
+                    todo.copy(title = newTitle, description = newDescription)
+                } else {
+                    todo
+                }
+            }
+        }
+    }
 }
