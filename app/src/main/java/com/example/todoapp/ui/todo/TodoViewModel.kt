@@ -60,4 +60,18 @@ class TodoViewModel : ViewModel() {
             }
         }
     }
+
+    // Clear all todos
+    fun clearAllTodos(){
+        viewModelScope.launch {
+            _todos.value = emptyList()
+        }
+    }
+
+    // Clear completed todos
+    fun clearCompletedTodos() {
+        viewModelScope.launch {
+            _todos.value = _todos.value.filter { !it.isComplete }
+        }
+    }
 }
