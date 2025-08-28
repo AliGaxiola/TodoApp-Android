@@ -31,13 +31,14 @@ import androidx.compose.ui.window.Dialog
 fun AddTaskDialog(
     showDialog: Boolean,
     onDismissDialog: () -> Unit,
-    onAddTask: (String, String) -> Unit
+    onConfirm: (String, String) -> Unit,
+    initialTitle: String = "",
+    initialDescription: String = "",
+    isEditMode: Boolean = false
 ) {
     if (showDialog) {
-
-        var title by remember { mutableStateOf("") }
-        var description by remember { mutableStateOf("") }
-
+        var title by remember { mutableStateOf(initialTitle) }
+        var description by remember { mutableStateOf(initialDescription) }
         Dialog(onDismissRequest = { onDismissDialog() }) {
             Surface(
                 shape = RoundedCornerShape(20.dp),
@@ -56,7 +57,7 @@ fun AddTaskDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "Add Task",
+                            if (isEditMode) "Edit Task" else "Add Task",
                             color = MaterialTheme.colorScheme.onPrimary,
                             style = MaterialTheme.typography.titleLarge
                         )
@@ -96,8 +97,8 @@ fun AddTaskDialog(
                     ) {
                         TextButton(
                             onClick = {
-                                title = ""
-                                description = ""
+                                title = initialTitle
+                                description = initialDescription
                                 onDismissDialog() }
                         ) {
                             Text("Cancel")
@@ -107,14 +108,14 @@ fun AddTaskDialog(
 
                         Button(
                             onClick = {
-                                onAddTask(title, description)
-                                title = ""
-                                description = ""
+                                onConfirm(title, description)
+                                title = initialTitle
+                                description = initialDescription
                                 onDismissDialog()
                             },
                             enabled = title.isNotBlank()
                         ) {
-                            Text("Add Task")
+                            Text(if (isEditMode) "Save Changes" else "Add Task")
                         }
                     }
                 }
