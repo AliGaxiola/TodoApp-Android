@@ -21,10 +21,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TodoAppTheme {
-                // Crear la base de datos y el repositorio manualmente
+                
                 val database = TodoDatabase.getDatabase(applicationContext)
                 val repository = TodoRepositoryImpl(database.todoDao())
-                // Crear el ViewModel usando un factory personalizado
+                
                 val todoViewModel: TodoViewModel = viewModel(
                     factory = object : ViewModelProvider.Factory {
                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
