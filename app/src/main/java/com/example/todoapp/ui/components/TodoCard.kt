@@ -25,10 +25,10 @@ import com.example.todoapp.R
 fun TodoCard(
     title: String,
     description: String,
-    isComplete: Boolean = false,
+    isCompleted: Boolean = false,
     onToggleComplete: () -> Unit,
     onClickDelete: () -> Unit,
-    onClickEdit: () -> Unit // Nuevo parámetro para editar
+    onClickEdit: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -82,10 +82,10 @@ fun TodoCard(
                 )
                 Icon(
                     painter = painterResource(
-                        if (isComplete) R.drawable.ic_check_circle else R.drawable.ic_indeterminated
+                        if (isCompleted) R.drawable.ic_check_circle else R.drawable.ic_indeterminated
                     ),
                     contentDescription = "Complete Icon",
-                    tint = if (isComplete) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = if (isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .size(26.dp)
                         .clickable { onToggleComplete() },
