@@ -99,7 +99,8 @@ fun AddTaskDialog(
                             onClick = {
                                 title = initialTitle
                                 description = initialDescription
-                                onDismissDialog() }
+                                onDismissDialog()
+                            }
                         ) {
                             Text("Cancel")
                         }

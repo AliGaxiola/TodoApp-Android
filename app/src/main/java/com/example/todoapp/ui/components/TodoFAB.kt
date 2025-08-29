@@ -13,7 +13,7 @@ import com.example.todoapp.R
 @Composable
 fun TodoFAB(showDialog: () -> Unit) {
     FloatingActionButton(
-        onClick = {showDialog()},
+        onClick = { showDialog() },
         contentColor = Color.White,
         containerColor = MaterialTheme.colorScheme.primary,
         elevation = FloatingActionButtonDefaults.elevation(

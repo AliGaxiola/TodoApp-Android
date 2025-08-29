@@ -3,75 +3,74 @@ package com.example.todoapp.ui.todo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todoapp.domain.model.TodoItem
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.example.todoapp.domain.repository.TodoRepository
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class TodoViewModel : ViewModel() {
+class TodoViewModel(private val repository: TodoRepository) : ViewModel() {
 
-    private val _todos = MutableStateFlow<List<TodoItem>>(emptyList())
-    val todos: StateFlow<List<TodoItem>> = _todos.asStateFlow()
-    private var nextId = 1
+    val todos: StateFlow<List<TodoItem>> = repository.getAllTodos()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    // Add new todo
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            repository.getAllTodos().collectLatest {
+                _isLoading.value = false
+            }
+        }
+    }
+
     fun addTodo(title: String, description: String) {
         viewModelScope.launch {
             val newTodo = TodoItem(
-                id = nextId++,
                 title = title,
                 description = description,
-                isComplete = false
+                isCompleted = false
             )
-
-            _todos.value = _todos.value + newTodo
+            repository.insertTodo(newTodo)
         }
     }
 
-    // Toggle completion status
     fun toggleComplete(id: Int) {
         viewModelScope.launch {
-            _todos.value = _todos.value.map { todo ->
-                if (todo.id == id) {
-                    todo.copy(isComplete = !todo.isComplete)
-                } else {
-                    todo
-                }
+            val currentList = todos.value
+            val todo = currentList.find { it.id == id }
+            if (todo != null) {
+                repository.updateTodo(todo.copy(isCompleted = !todo.isCompleted))
             }
         }
     }
 
-    // Remove todo
     fun removeTodo(id: Int) {
         viewModelScope.launch {
-            _todos.value = _todos.value.filter { it.id != id }
-        }
-    }
-
-    // Edit todo
-    fun editTodo(id: Int, newTitle: String, newDescription: String) {
-        viewModelScope.launch {
-            _todos.value = _todos.value.map { todo ->
-                if (todo.id == id) {
-                    todo.copy(title = newTitle, description = newDescription)
-                } else {
-                    todo
-                }
+            val todo = todos.value.find { it.id == id }
+            if (todo != null) {
+                repository.deleteTodo(todo)
             }
         }
     }
 
-    // Clear all todos
-    fun clearAllTodos(){
+    fun editTodo(id: Int, newTitle: String, newDescription: String) {
         viewModelScope.launch {
-            _todos.value = emptyList()
+            val todo = todos.value.find { it.id == id }
+            if (todo != null) {
+                repository.updateTodo(todo.copy(title = newTitle, description = newDescription))
+            }
         }
     }
 
-    // Clear completed todos
+    fun clearAllTodos() {
+        viewModelScope.launch {
+            repository.clearAll()
+        }
+    }
+
     fun clearCompletedTodos() {
         viewModelScope.launch {
-            _todos.value = _todos.value.filter { !it.isComplete }
+            repository.clearCompleted()
         }
     }
 }
