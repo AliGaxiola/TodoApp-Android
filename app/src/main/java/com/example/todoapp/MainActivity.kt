@@ -6,33 +6,20 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.todoapp.ui.theme.TodoAppTheme
 import com.example.todoapp.ui.todo.TodoScreen
 import com.example.todoapp.ui.todo.TodoViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.todoapp.data.TodoDatabase
-import com.example.todoapp.data.repository.TodoRepositoryImpl
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             TodoAppTheme {
-                
-                val database = TodoDatabase.getDatabase(applicationContext)
-                val repository = TodoRepositoryImpl(database.todoDao())
-                
-                val todoViewModel: TodoViewModel = viewModel(
-                    factory = object : ViewModelProvider.Factory {
-                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                            @Suppress("UNCHECKED_CAST")
-                            return TodoViewModel(repository) as T
-                        }
-                    }
-                )
+                val todoViewModel: TodoViewModel = hiltViewModel()
 
                 TodoScreen(
                     modifier = Modifier.fillMaxSize(),
