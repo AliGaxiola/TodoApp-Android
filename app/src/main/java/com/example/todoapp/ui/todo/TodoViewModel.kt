@@ -4,10 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todoapp.domain.model.TodoItem
 import com.example.todoapp.domain.repository.TodoRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TodoViewModel(private val repository: TodoRepository) : ViewModel() {
+@HiltViewModel
+class TodoViewModel @Inject constructor(
+    private val repository: TodoRepository
+) : ViewModel() {
 
     val todos: StateFlow<List<TodoItem>> = repository.getAllTodos()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
