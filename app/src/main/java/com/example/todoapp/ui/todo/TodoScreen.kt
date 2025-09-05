@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.example.todoapp.domain.model.TodoItem
 import com.example.todoapp.ui.components.AddTaskDialog
+import com.example.todoapp.ui.components.ConfirmDeleteDialog
 import com.example.todoapp.ui.components.TodoFAB
 import com.example.todoapp.ui.components.TodoCard
 import com.example.todoapp.ui.components.TodoTopAppBar
@@ -35,6 +36,8 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
     val isLoading by viewModel.isLoading.collectAsState()
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val (editTodo, setEditTodo) = remember { mutableStateOf<TodoItem?>(null) }
+    val (showDeleteDialog, setShowDeleteDialog) = remember { mutableStateOf(false) }
+    val (todoToDelete, setTodoToDelete) = remember { mutableStateOf<TodoItem?>(null) }
 
     Scaffold(
         floatingActionButton = {
@@ -60,6 +63,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                         CircularProgressIndicator()
                     }
                 }
+
                 todos.isEmpty() -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -72,6 +76,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                         )
                     }
                 }
+
                 else -> {
                     val hasCompleted = todos.any { it.isCompleted }
                     Row(
@@ -97,7 +102,10 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                                 description = todo.description,
                                 isCompleted = todo.isCompleted,
                                 onToggleComplete = { viewModel.toggleComplete(todo.id) },
-                                onClickDelete = { viewModel.removeTodo(todo.id) },
+                                onClickDelete = {
+                                    setTodoToDelete(todo)
+                                    setShowDeleteDialog(true)
+                                },
                                 onClickEdit = {
                                     setEditTodo(todo)
                                     setShowDialog(true)
@@ -128,5 +136,18 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
         initialTitle = editTodo?.title ?: "",
         initialDescription = editTodo?.description ?: "",
         isEditMode = editTodo != null
+    )
+
+    ConfirmDeleteDialog(
+        show = showDeleteDialog,
+        onConfirm = {
+            todoToDelete?.let { viewModel.removeTodo(it.id) }
+            setShowDeleteDialog(false)
+            setTodoToDelete(null)
+        },
+        onDismiss = {
+            setShowDeleteDialog(false)
+            setTodoToDelete(null)
+        }
     )
 }
